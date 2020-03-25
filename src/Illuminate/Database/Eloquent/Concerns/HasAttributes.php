@@ -6,6 +6,7 @@ use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
@@ -14,6 +15,7 @@ use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use LogicException;
+use JsonSerializable;
 
 trait HasAttributes
 {
@@ -232,6 +234,10 @@ trait HasAttributes
 
             if ($attributes[$key] instanceof Arrayable) {
                 $attributes[$key] = $attributes[$key]->toArray();
+            } elseif ($attributes[$key] instanceof Jsonable) {
+                $attributes[$key] = $attributes[$key]->toJson();
+            } elseif ($attributes[$key] instanceof JsonSerializable) {
+                $attributes[$key] = $attributes[$key]->jsonSerialize();
             }
         }
 
